@@ -41,7 +41,7 @@ ELECTRON
   #f)
 
 (define (get-info input symbol default)
-  (define input-port (if (string? input) (open-input-string input) input))
+  (define input-port (if (string? input) (open-input-bytes input) input))
   ((read-language input-port) symbol default))
 
 (define (get-indenter text)
