@@ -47,8 +47,7 @@ ELECTRON
 (define (get-indenter text)
   (with-handlers ([exn? (lambda (e) default-indenter)])
     (define indenter (get-info text 'drracket:indentation #f))
-    (if indenter
-       indenter
+    (or indenter
        default-indenter)))
 
 (define indent:text%
@@ -56,8 +55,7 @@ ELECTRON
     (init-field [indenter default-indenter])
     (define/augment (compute-amount-to-indent [posn 0])
       (define res (indenter this posn))
-      (if res
-         res
+      (or res
          (send this compute-racket-amount-to-indent posn)))
     (super-new)))
 
