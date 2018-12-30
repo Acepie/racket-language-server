@@ -1,9 +1,9 @@
-#lang racket/base
+#lang racket/base 
 (require racket/class
-         racket/list
-         racket/string
-         framework
-         "document.rkt")
+        racket/list
+        racket/string
+        framework
+        "document.rkt")
 
 (module+ test
   (require rackunit)
@@ -41,12 +41,15 @@ ELECTRON
   #f)
 
 (define (get-info input symbol default)
-  (define input-port (if (string? input) (open-input-bytes input) input))
+  (define input-port (if (string? input) (open-input-string input) input))
   ((read-language input-port) symbol default))
 
 (define (get-indenter text)
   (with-handlers ([exn? (lambda (e) default-indenter)])
-    (get-info text 'drracket:indentation #f)))
+    (define indenter (get-info text 'drracket:indentation #f))
+    (if indenter
+       indenter
+       default-indenter)))
 
 (define indent:text%
   (class racket:text%
@@ -54,8 +57,8 @@ ELECTRON
     (define/augment (compute-amount-to-indent [posn 0])
       (define res (indenter this posn))
       (if res
-          res
-          (send this compute-racket-amount-to-indent posn)))
+         res
+         (send this compute-racket-amount-to-indent posn)))
     (super-new)))
 
 (define (string->indent:text% text)
